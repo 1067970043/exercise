@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #header{
+        width: 100%;
+        height: 80px;
+        background-color: rgb(47, 47, 51);
+        text-align: center;
+    }
+    h1,h2{
+        color: rgb(255, 255, 255);
+    }
+    #table{
+        width: 100%;
+    }
+    #tab {
+    border-collapse: collapse; 
+    width: 100%; 
+    border: 1px solid #ddd; 
+    font-size: 18px; 
+    text-align: center;
+    }
+    
+    #tab th, #tab td {
+    padding: 10px; 
+    }
+    
+    #searchbox{
+        padding: 10px;
+    }
+
+    #bse{
+        color: white;
+        background-color: rgb(119, 121, 7);
+        font-size: 10px;
+        border-radius: 4px;
+    }
+
+    .del{
+        color: white;
+        background-color: rgb(255, 109, 109);
+        font-size: 16px;
+        border-radius: 4px;
+    }
+    span{
+        
+    }
+</style>
+<body>
+    <div id="header">
+        <h2>新知卫星云图</h2>
+        <span>管理系统</span>
+    </div>
+    <div id="searchbox">
+        搜索code：<input type="text" id="search" onkeyup="search()">
+        分类：<select id="sel" onchange="search()">
+                <option value="">所有类型</option>
+                <option value="STRING" >STRING</option>
+                <option value="ARRAY">ARRAY</option>
+            </select>
+    </div>
+    <div>
+        <table id="tab" border="1">
+            <thead>
+                <tr>
+                    <th>配置项code</th>
+                    <th>配置项名称</th>
+                    <th>配置项类型</th>
+                    <th>配置项内容</th>
+                    <th>配置项操作</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <script>
+
+    var infoList = [
+        {'configcode': 'qq', 'configname':'QQ群号', 'configtype':'STRING', 'configcontent':'88341644'},
+        {'configcode': 'qq_key', 'configname':'QQ群号key', 'configtype':'ARRAY', 'configcontent':'88341644'},
+        {'configcode': 'close_vip_channels', 'configname':'', 'configtype':'STRING', 'configcontent':'88341644'},
+        {'configcode': 'layer_list', 'configname':'QQ群号', 'configtype':'ARRAY', 'configcontent':'["sougou","baidu","huawei","-oppp","vivo","xiaomi"]'},
+        {'configcode': 'topic_list', 'configname':'图层列表', 'configtype':'STRING', 'configcontent':'[{"sougou","baidu","huawei","-oppp","vivo","xiaomi"},{"sougou","baidu","huawei","-oppp","vivo","xiaomi"},,{"sougou","baidu","huawei","-oppp","vivo","xiaomi"}]'},
+        {'configcode': 'layer_list', 'configname':'专题列表', 'configtype':'ARRAY', 'configcontent':'[{"sougou","baidu","huawei","-oppp","vivo","xiaomi"},{"sougou","baidu","huawei","-oppp","vivo","xiaomi"}]'},
+    ]
+
+    var tbody = document.querySelector('tbody')
+
+    var str = ''
+
+    function search(){
+        str = ''
+        var input = document.getElementById("search");
+        filter = input.value.toUpperCase();
+        var sel = document.getElementById("sel").value;
+        infoList.forEach((item) => {
+            console.log(item.configcode)
+            if(item.configcode.toUpperCase().indexOf(filter) > -1)
+                if(item.configtype.indexOf(sel) > -1)
+                {
+                    str += '<tr>'
+                    for (var key in item) {
+                        str += '<td>' + item[key] + '</td>'
+                    }
+                    str +='<td><input type="button" class="del" value="删除" onclick="deleteRow(this)"></td>'
+                    str += '</tr>'
+                }
+        })
+        tbody.innerHTML = str
+    }
+    
+    search()
+    
+    // var Bse = document.getElementById("bse")
+    // var table = document.getElementById("tab");
+    // tr = table.getElementsByTagName("tr");
+    // var sel = document.getElementById("sel")
+    // function search(){
+    //     var input = document.getElementById("search");
+    //     filter = input.value.toUpperCase();
+    //     for(var i=0;i<tr.length;i++)
+    //     {
+    //         td = tr[i].getElementsByTagName("td")[0];
+    //         td2 = tr[i].getElementsByTagName("td")[2];
+    //         if(td) {
+    //             // if (td.innerHTML.toUpperCase().indexOf(filter) > -1
+    //             //     && td2.innerHTML.indexOf(sel.value) > -1) {
+    //             //     tr[i].style.display = "";
+    //             // } else {
+    //             //     tr[i].style.display = "none";
+    //             // }
+    //             if(td.innerHTML.toUpperCase().indexOf(filter) === -1)
+    //             tr[i].style.display = "none";
+    //             else
+    //             if(td2.innerHTML.indexOf(sel.value) === -1)
+    //             tr[i].style.display = "none";
+    //             else
+    //             tr[i].style.display = "";
+    //         }
+    //     }
+    // }
+
+    function deleteRow(r){
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById('tab').deleteRow(i);
+    }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图层置顶或置底</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+        .pane{
+            background:#34495e;
+            line-height:28px;
+            color:#fff;
+            z-index:10;
+            position:absolute;
+            top:20px;
+            right:20px
+        }
+        .pane a{
+            display:block;
+            color:#fff;
+            text-align:left;
+            padding:0 10px;
+            min-width:28px
+            ;min-height:28px;
+            float:left
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    <div class="pane">
+        <a href="javascript:bringToFront()">1 to front</a>
+        <a href="javascript:sendToBack()">1 to back</a>
+    </div>
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 14,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            }),
+            layers : [
+                new maptalks.VectorLayer('1'),
+                new maptalks.VectorLayer('2')
+            ]
+        });
+
+        function bringToFront() {
+            map.getLayer('1').bringToFront();
+        }
+
+        function sendToBack() {
+            map.getLayer('1').bringToBack();
+        }
+
+        var rect2 = new maptalks.Rectangle(
+            map.getCenter().add(-0.02, 0),
+            1600,
+            1000,
+            {
+                'symbol' : [
+                    {
+                        'lineColor': '#34495e',
+                        'lineWidth': 3,
+                        'polygonFill': '#1bbc9b',
+                        'polygonOpacity' : 1
+                    },
+                    {
+                        'textName' : 'Layer 2',
+                        'textWeight' : 'bold',
+                        'textSize' : 30,
+                        'textFill' : '#fff'
+                    }
+                ]
+            }
+        );
+
+        map.getLayer('2').addGeometry(rect2);
+
+        var rect1 = rect2.copy().translate([0.006, 0.006]).updateSymbol(
+            [{
+                'polygonFill' : 'rgb(216, 115, 149)'
+            }, 
+            {
+                'textName' : 'Layer 1'
+            }]
+        );
+            
+        map.getLayer('1').addGeometry(rect1)
+    </script>
+</body>
+</html>

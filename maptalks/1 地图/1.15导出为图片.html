@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导出为图片</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+        .pane{
+            background:#34495e;
+            line-height:28px;
+            color:#fff;
+            z-index:10;
+            position:absolute;
+            top:20px;
+            right:20px
+        }
+        .pane a{
+            display:block;
+            color:#fff;
+            text-align:left;
+            padding:0 10px;
+            min-width:28px;
+            min-height:28px;
+            float:left
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    <div class="pane"><a href="javascript:save();">Export image</a></div>    
+
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        })
+
+        new maptalks.VectorLayer('V', new maptalks.Marker(map.getCenter()))
+        .addTo(map);
+
+        function save() {
+        var data = map.toDataURL({
+          'mimeType' : 'image/jpeg', // or 'image/png'
+          'save' : true,             // to pop a save dialog
+          'fileName' : 'map'         // file name
+        });
+      }
+
+    </script>
+</body>
+</html>

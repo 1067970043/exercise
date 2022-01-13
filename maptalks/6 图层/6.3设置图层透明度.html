@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设置图层透明度</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 14,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+        var rect1 = new maptalks.Rectangle(
+            map.getCenter().add(-0.025, 0.005), 1600, 1000,
+            {
+                'symbol' : [
+                    {
+                        'lineColor' : '#34495e',
+                        'lineWidth' : 3,
+                        'polygonFill': '#1bbc9b'
+                    },
+                    {
+                        'textName' : '70%',
+                        'textWight' : 'bold',
+                        'textSize' : 30,
+                        'textFill' : '#fff'
+                    }
+                ]
+            }
+        );
+
+        var rect2 = rect1.copy().translate([0.03, 0]).updateSymbol([{}, { 'textName' : '40%' }]);
+
+        var layer1 = new maptalks.VectorLayer('vector1', [rect1], {
+            'opacity': 0.7
+        }).addTo(map);
+
+        var layer2 = new maptalks.VectorLayer('vector2', [rect2], {
+            'opacity' : 0.4
+        }).addTo(map);
+    </script>
+</body>
+</html>

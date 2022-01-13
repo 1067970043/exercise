@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>根据id获取图形</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+        .pane{
+            background:#34495e;
+            line-height:28px;
+            color:#fff;
+            z-index:10;
+            position:absolute;
+            top:20px;
+            right:20px
+        }
+        .pane a{
+            display:block;
+            color:#fff;
+            text-align:left;
+            padding:0 10px;
+            min-width:28px
+            ;min-height:28px;
+            float:left
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    <div class="pane">
+        <a href="javascript:get100();">Get ID of 100</a>
+        <a href="javascript:get200();">Get ID of 200</a>
+        <a href="javascript:get300();">Get ID of 300</a>
+    </div>
+
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 13,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var layer = new maptalks.VectorLayer('vector').addTo(map);
+
+        function get100() {
+            getById(100);
+        }
+
+        function get200() {
+            getById(200);
+        }
+
+        function get300() {
+            getById(300);
+        }
+
+        function getById(id){
+            console.log(layer.getGeometryById(id))
+            if(layer.getGeometryById(id).getSymbol()[0].polygonFill == '#f00')
+            layer.getGeometryById(id).updateSymbol([{'polygonFill' : '#000'}])
+            else
+            layer.getGeometryById(id).updateSymbol([{'polygonFill' : '#f00'}]);
+            // console.log(layer.getGeometryById(id).getSymbol()[0].polygonFill)
+            // layer.getGeometryById(id).setSymbol([{'polygonFill' : '#f00'}])
+        }
+
+        for(var i = 0; i < 3; i++) {
+            new maptalks.Polygon(
+                [
+                    [106.63043 + 0.02 * i,29.71798],
+                    [106.64043 + 0.02 * i,29.71798],
+                    [106.64043 + 0.02 * i,29.70798],
+                    [106.63043 + 0.02 * i,29.70798]
+                ],{
+                    'id' : (i + 1) * 100,
+                    'properties' : {
+                        'count' : (i + 1) * 100
+                    },
+                    'symbol' : [{
+                            'polygonFill': '#747474',
+                            'polygonOpacity': 0.5,
+                            'lineColor': '#000',
+                            'lineWidth': 2
+                        },
+                        {
+                            'textName' : '{count}',
+                            'textSize' : 40,
+                            'textFill' : '#fff'
+                    }]
+                }
+            ).addTo(layer);
+        }
+    </script>
+</body>
+</html>

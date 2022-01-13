@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON</title>
+</head>
+<body>
+    <span id="name"></span><br /> 
+    <span id="url"></span><br /> 
+    <script>
+        var JSONObject= {
+            "sites": [
+                { "name":"菜鸟教程" , "url":"www.runoob.com" }, 
+                { "name":"google" , "url":"www.google.com" }, 
+                { "name":"微博" , "url":"www.weibo.com" }
+            ]
+        };
+        document.getElementById("name").innerHTML=JSONObject.sites[0].name 
+        document.getElementById("url").innerHTML=JSONObject.sites[1].url 
+    </script>
+</body>
+</html>

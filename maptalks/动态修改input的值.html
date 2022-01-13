@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id='newobj' style="opacity: 0;">
+    <div id="oldhtml">123465</div>
+    <script>
+        const oldhtml = document.getElementById('oldhtml');
+        const newobj = document.getElementById('newobj');
+        oldhtml.onclick = () => {
+            newobj.focus()
+            newobj.value = oldhtml.innerText
+        }
+        newobj.oninput = () => {
+
+            oldhtml.innerText = newobj.value
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>限制地图区域</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 13,
+            centerCross: true,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d'],
+                attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+            }),
+            layers: [
+                new maptalks.VectorLayer('v')
+            ]
+        });
+
+        var extent = map.getExtent();
+
+        map.setMaxExtent(extent);
+
+        map.setZoom(map.getZoom() -1, { animation : false });
+
+        map.getLayer('v')
+            .addGeometry(
+            new maptalks.Polygon(extent.toArray(), {
+                symbol : { 'polygonOpacity': 0, 'lineWidth': 5 }
+            })
+        );
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文字标签</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var label = new maptalks.Label('没有盒子',
+        [106.63043,29.71798],
+        {
+            'draggable' : true,
+            'textSymbol': {
+            'textFaceName' : 'monospace',
+            'textFill' : '#34495e',
+            'textHaloFill' : '#fff',
+            'textHaloRadius' : 4,
+            'textSize' : 18,
+            'textWeight' : 'bold',
+            'textVerticalAlignment' : 'top'
+            }
+        });
+
+        var labelBox = new maptalks.Label('有盒子', 
+        [106.62043,29.71798],
+        {
+            'draggable' : true,
+            'boxStyle' : {
+                'padding' : [12, 8],
+                'verticalAlignment' : 'top',
+                'horizontalAlignment' : 'left',
+                'minWidth' : 200,
+                'minHeight' : 30,
+                'symbol' : {
+                'markerType' : 'square',
+                'markerFill' : 'rgb(135,196,240)',
+                'markerFillOpacity' : 0.9,
+                'markerLineColor' : '#34495e',
+                'markerLineWidth' : 1
+                }
+            },
+            'textSymbol' : {
+                'textFaceName' : 'monospace',
+                'textFill' : '#34495e',
+                'textHaloFill' : '#fff',
+                'textHaloRadius' : 4,
+                'textSize' : 18,
+                'textWeight' : 'bold',
+                'textVerticalAlignment' : 'top'
+            }
+        });
+        new maptalks.VectorLayer('vector', [label, labelBox]).addTo(map);
+    </script>
+</body>
+</html>

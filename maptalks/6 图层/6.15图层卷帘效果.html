@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幕布效果</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 92%;
+        }
+        #swipe{
+            background-color:transparent;
+            width:100%;
+            border:none;
+            height:10px;
+            cursor:col-resize;
+            margin-bottom:20px
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+     <input type="range" id = 'swipe' />
+    <div id="map" class="container"></div>
+    
+    <script>
+
+        var layer = new maptalks.TileLayer('light', {
+            urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+            subdomains: ['a','b','c','d'],
+            'forceRenderOnMoving' : true,
+            'forceRenderOnZooming' : true
+        });
+
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            }),
+            layers : [layer]
+        });
+
+        var swipe = document.getElementById('swipe');
+
+        var renderer = layer.getRenderer();
+        var canvasGetter = renderer.getCanvasImage;
+        //覆盖渲染器的默认方法来获得图层画布图像
+        renderer.getCanvasImage = function() {
+            var dpr = map.getDevicePixelRatio();
+            //原始图层画布图像
+            var layerImage = canvasGetter.call(renderer);
+            if (!layerImage || !layerImage.image) {
+                return layerImage;
+            }
+        
+        //绘制宽度后，层被擦除滑动器
+        var ctx = renderer.context;
+        var width = renderer.canvas.width * (swipe.value / 100);
+        var height = ctx.canvas.height;
+
+        //复制原始图层画布的矩形
+        var drawnRect = document.createElement('canvas');
+        drawnRect.width = width;
+        drawnRect.height = ctx.canvas.height;
+        drawnRect.getContext('2d').drawImage(layerImage.image, 0, 0);
+
+        //清除擦掉的部分
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        //绘制白色背景覆盖底部图层时缩放
+        ctx.beginPath();
+        ctx.rect(0, 0, width / dpr, height /dpr);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+
+        //在图层的画布上绘制绘制的部分
+        ctx.drawImage(drawnRect, 0, 0, width / dpr, height / dpr);
+        layerImage.image = ctx.canvas;
+        return layerImage;
+      };
+
+      swipe.addEventListener('input', function () {
+        //让图层在下一帧重绘自己
+        layer.getRenderer().setToRedraw();
+      });
+    </script>
+</body>
+</html>

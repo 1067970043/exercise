@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOD和自定义瓦片图层</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var earchRadius = 6378137;  //椭圆长半轴
+        var inchperMeter = 1 / 0.0254;  //每一米几英尺
+        var meterPerMapUnit = (Math.PI * 2 * earchRadius) / 360;    //周长/360，每一弧度有多长
+
+        function replaceURL(url, x, y, scale) {
+            var str = ['x', x, 'y', y, 'scale', scale];
+            for(var i = 0, len = str.length; i < len; i += 2) {
+                url = url.replace('{' + str[i] + '}', str[i + 1]);
+            }
+            return url;
+        }
+
+        function resolutionToScale(resolution, dpi) {
+            var scale = resolution * dpi * inchperMeter * meterPerMapUnit;  //
+            scale = 1 / scale;
+            return scale;
+        }
+
+        var parmas = {
+            zooms: 5,
+            firstRes: 0.009507170090264933,
+            origin: [114.59, 42.31],   //地图左上角
+            maxBounds: [
+                [-180, -90],
+                [180, 90]
+            ]
+        };
+
+        var url = 'https://iserver.supermap.io/iserver/services/map-jingjin/rest/maps/%E4%BA%AC%E6%B4%A5%E5%9C%B0%E5%8C%BA%E5%9C%B0%E5%9B%BE/tileImage.png?width=256&height=256&redirect=false&transparent=true&cacheEnabled=true&origin=%7B%22x%22%3A114.59%2C%22y%22%3A42.31%7D&overlapDisplayed=false&scale={scale}&x={x}&y={y}'
+        var res = [];
+        for(var i = 0; i <= parmas.zooms; i++){
+            res.push(parmas.firstRes / Math.pow(2, i));
+        }
+        var crs = {
+            projection: 'EPSG:4326',
+            resolutions: res,  //分辨率
+            fullExtent: {   //地图范围
+                top: 42.31,
+                left: 114.59,
+                bottom: 37.44232891378436,
+                right: 119.45767108621564
+            }
+        };
+
+        var tileLayer =new maptalks.TileLayer('base', {
+            repeatWorld: true,
+            urlTemplate: url,
+            spatialReference: crs,
+            subdomains: ['a', 'b', 'c', 'd'],
+            tileSystem:[1, -1].concat(parmas.origin)
+        });
+
+        tileLayer.getTileUrl = function (x, y, z) {
+            this.scales = this.scales || {};
+            if(this.scales[z]){
+                return replaceURL(this.options.urlTemplate, x, y, this.scales[z]);
+            }
+            var crs = this.getMap().getSpatialReference().getProjection();
+            var bounds = this._getTileExtent(x, y, z);  //范围
+            var min = bounds.getMin(),max = bounds.getMax();
+            var ne = crs.project(max);
+            var sw = crs.project(min);
+            var tileSize = this.options.tileSize[0];    //256
+            var resolution = Math.max(
+                Math.abs(ne.x - sw.x) / tileSize,
+                Math.abs(ne.y - sw.y) / tileSize
+            );  //0.009507170090264971
+            var scale = resolutionToScale(resolution, 96);  //2.4999999999999904e-7
+            this.scales[z] = scale;
+            return replaceURL(this.options.urlTemplate, x, y, this.scales[z]);
+        };
+
+        tileLayer._getTileExtent = function (x, y, z) {
+            var map = this.getMap(),
+            res = map._getResolution(z),  //获取当前分辨率
+            tileConfig = this._getTileConfig(),  //获取瓦片配置
+            tileExtent = tileConfig.getTilePrjExtent(x, y, res); //获取地图当前视图范围的投影地理范围
+            return tileExtent;
+        };
+
+        var map = new maptalks.Map('map', {
+            center: [116.85, 39.79],
+            pitch:40,
+            zoom: 0,
+            spatialReference: crs,
+            baseLayer: tileLayer
+        });
+    </script>
+</body>
+</html>

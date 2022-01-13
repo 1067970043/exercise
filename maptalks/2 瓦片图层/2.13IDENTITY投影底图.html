@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDENTITY投影底图</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            renderer: 'canvas',
+            center: [0, 0],
+            zoom: 5,
+            spatialReference : {
+                projection : 'identity',
+                resolutions : [32, 16, 8, 4, 2, 1],
+                fullExtent : {
+                    'top': 10000,
+                    'left': -10000,
+                    'bottom': -10000,
+                    'right': 10000
+                }
+            }
+        });
+
+        var soccerField = [
+            //场地
+            new maptalks.Rectangle([-400, 260], 800, 520, {
+                symbol : {
+                    lineWidth : 2,
+                    lineColor : '#fff',
+                    polygonFill : 'rgb(0, 129, 0)'
+                }
+            }),
+            //中线
+            new maptalks.LineString([[0, -260], [0, 260]], {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2
+                }
+            }),
+            //圆圈
+            new maptalks.Circle([0, 0], 70, {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2,
+                    polygonFill : 'rgb(255, 255, 255)'
+                }
+            }),
+            //左四分之一圆
+            new maptalks.Sector([-315, 0], 60, -60, 60, {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2,
+                    polygonFill : 'rgb(255, 255, 255)'
+                }
+            }),
+            //右四分之一圆
+            new maptalks.Sector([315, 0], 60, 120, 240, {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2,
+                    polygonFill : 'rgb(255, 255, 255)'
+                }
+            }),
+            new maptalks.Rectangle([-400, 155], 120, 310, {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2,
+                    polygonFill : 'rgb(0, 129, 0)'
+                }
+            }),
+            new maptalks.Rectangle([280, 155], 120, 310, {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2,
+                    polygonFill : 'rgb(0, 129, 0)'
+                }
+            }),
+            new maptalks.Rectangle([-400, 68], 42, 136, {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2
+                }
+            }),
+            new maptalks.Rectangle([400 - 42, 68], 42, 136, {
+                symbol : {
+                    lineColor : '#fff',
+                    lineWidth : 2
+                }
+            }),
+
+            new maptalks.Marker([315, 0], {
+                symbol : {
+                    markerType : 'ellipse',
+                    markerWidth : 2,
+                    markerHeight : 2,
+                    markerFill : '#fff',
+                    markerLineColor : '#fff'
+                }
+            }),
+
+            new maptalks.Marker([-315, 0], {
+                symbol : {
+                    markerType : 'ellipse',
+                    markerWidth : 2,
+                    markerHeight : 2,
+                    markerFill : '#fff',
+                    markerLineColor : '#fff'
+                }
+            })
+        ];
+
+        new maptalks.VectorLayer('field', soccerField).addTo(map);
+
+    </script>
+</body>
+</html>

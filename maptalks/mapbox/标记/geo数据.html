@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Add a line to a map using a GeoJSON source</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiaGFwcHlxaWdlIiwiYSI6ImNrdHdlYjN1azI5dWEzMG8xeGtxdGl1Z2YifQ.QUwwE6JFluaSHirRqz75Ew';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [-10.546875, 40.713955826286046],
+        zoom: 4
+    });
+
+    map.on('load', () => {
+        map.addSource('route', {
+            'type': 'geojson',
+            'data': {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                "type": "Feature",
+                "properties": {
+                    "linecolor": "red",
+                    "linewidth": 20
+                },
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [
+                    [
+                        -10.546875,
+                        40.713955826286046
+                    ],
+                    [
+                        -7.03125,
+                        9.44906182688142
+                    ],
+                    [
+                        1.0546875,
+                        31.653381399664
+                    ],
+                    [
+                        13.7109375,
+                        26.115985925333536
+                    ]
+                    ]
+                }
+                },
+                {
+                "type": "Feature",
+                "properties": {
+                    "linecolor": "blue",
+                    "linewidth": 10
+                },
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [
+                    [
+                        13.0078125,
+                        17.644022027872726
+                    ],
+                    [
+                        27.421875,
+                        19.642587534013032
+                    ]
+                    ]
+                }
+                }
+            ]
+            }
+        });
+        map.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': 'route',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': ["get", "linecolor"],
+                'line-width': ["get", "linewidth"]
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

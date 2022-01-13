@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    你输入的：<span id=name></span>
+    <br />
+    <from id="form1">
+        请输入：<input type="text" id="inputName">
+    </from>
+    <script>
+        let spanName = document.getElementById('name')
+        let inputName = document.getElementById('inputName')
+        inputName.oninput = function () { //原生input输入事件
+            spanName.innerHTML = this.value; //输入框赋值
+        };
+    </script>
+</body>
+</html>

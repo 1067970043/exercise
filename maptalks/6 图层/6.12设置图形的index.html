@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>改变图层叠加顺序</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+        .pane{
+            background:#34495e;
+            line-height:28px;
+            color:#fff;
+            z-index:10;
+            position:absolute;
+            top:20px;
+            right:20px
+        }
+        .pane a{
+            display:block;
+            color:#fff;
+            text-align:left;
+            padding:0 10px;
+            min-width:28px
+            ;min-height:28px;
+            float:left
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    <div class="pane">
+        <a href="javascript:sort1()">3，2，1</a>
+        <a href="javascript:sort2()">1，2，3</a>
+    </div>
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 14,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            }),
+            layers : [
+                new maptalks.VectorLayer('v')
+            ]
+        });
+
+        var rect3 = new maptalks.Rectangle(
+            map.getCenter().add(-0.025, 0.0036),
+            1600,
+            1000,
+            {
+                'symbol' : [
+                    {
+                        'lineColor': '#34495e',
+                        'lineWidth': 3,
+                        'polygonFill': '#1bbc9b',
+                        'polygonOpacity' : 1
+                    },
+                    {
+                        'textName' : 'Layer 2',
+                        'textWeight' : 'bold',
+                        'textSize' : 30,
+                        'textFill' : '#fff'
+                    }
+                ]
+            }
+        );
+
+        var rect2 = rect3.copy().translate([0.006, 0.006]).updateSymbol(
+            [{
+                'polygonFill' : 'rgb(216, 115, 149)'
+            }, 
+            {
+                'textName' : 'Layer 2'
+            }]
+        );
+
+
+        var rect1 = rect2.copy().translate([0.006, 0.006]).updateSymbol(
+            [{
+                'polygonFill' : 'rgb(135, 196, 240)'
+            }, 
+            {
+                'textName' : 'Layer 1'
+            }]
+        );
+
+        function sort1() {
+            rect3.bringToFront();
+            rect1.bringToBack();
+        }
+
+        function sort2() {
+            rect1.setZIndex(3);
+            rect2.setZIndex(2);
+            rect3.setZIndex(1);
+        }
+
+        map.getLayer('v').addGeometry(rect3, rect2, rect1);
+        
+    </script>
+</body>
+</html>

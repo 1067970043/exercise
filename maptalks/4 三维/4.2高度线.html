@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高度线</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 15,
+            pitch: 75,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var layer = new maptalks.VectorLayer('vector', {
+            enableAltitude : true,
+            drawAltitude : {
+                lineWidth : 1,
+                lineColor : '#000'
+            }
+        }).addTo(map);
+
+        var extent = map.getExtent(),
+        min = extent.getMin(),
+        w = extent.getWidth(),
+        h = extent.getHeight(),
+        markers = [];
+        for(var i = 0; i < 100; i++) {
+            markers.push(new maptalks.Marker([min.x + Math.random() * w, min.y + Math.random() * h], {
+                properties : {
+                    altitude : Math.random() * 600
+                }
+            }));
+        }
+        layer.addGeometry(markers);
+        map.setPith(60);
+    </script>
+</body>
+</html>

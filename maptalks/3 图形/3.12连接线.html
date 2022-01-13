@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>连接线</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var layer = new maptalks.VectorLayer('vector').addTo(map);
+
+        var src = new maptalks.Marker(
+            [106.63043,29.71798],
+            {
+                symbol: {
+                    'markerType' : 'ellipse',
+                    'markerFill' : 'rgb(135,196,240)',
+                    'markerFillOpacity' : 0.8,
+                    'markerLineColor' : '#fff',
+                    'markerLineWidth' : 3,
+                    'markerWidth' : 120,
+                    'markerHeight' : 120
+                }
+            }
+        );
+
+        var dst = new maptalks.Marker(
+            [107.63043,30.71798],
+            {
+            'draggable' : true,
+            'symbol': [{
+                'markerType' : 'ellipse',
+                'markerFill' : 'rgb(216,115,149)',
+                'markerFillOpacity' : 0.8,
+                'markerLineColor' : '#fff',
+                'markerLineWidth' : 3,
+                'markerWidth' : 70,
+                'markerHeight' : 70
+                },
+                {
+                'textName' : 'Drag\nMe',
+                'textSize' : 18,
+                'textFill' : '#fff',
+                'textWrapCharacter' : '\n'
+            }]
+            }
+        );
+
+        var line = new maptalks.ConnectorLine(src, dst, {
+            showOn : 'always',
+            arrowStyle : 'classic',
+            arrowPlacement : 'vertex-last',
+            symbol: {
+                lineColor: '#34495e',
+                lineWidth: 2
+            }
+        });
+
+        layer.addGeometry(src, dst, line);
+
+        var src2 = src.copy().translate(0, -0.01);
+        var dst2 = dst.copy().translate(0, -0.01);
+        var line2 = new maptalks.ArcConnectorLine(src2, dst2, {
+            arcDegree : 90,
+            showOn : 'always',
+            symbol: {
+            lineColor: '#34495e',
+            lineWidth: 2
+            }
+        });
+
+        layer.addGeometry(src2, dst2, line2);
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鼠标与图形的空间关系</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+        .pane{
+            background:#34495e;
+            line-height:28px;
+            color:#fff;
+            z-index:10;
+            position:absolute;
+            top:20px;
+            right:20px
+        }
+        .pane a{
+            display:block;
+            color:#fff;
+            text-align:left;
+            padding:0 10px;
+            min-width:28px
+            ;min-height:28px;
+            float:left
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    <div class = "pane">Click around the square Right click to clear </div>
+
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var layer = new maptalks.VectorLayer('v').addTo(map);
+        var markerLayer = new maptalks.VectorLayer('markers').addTo(map);
+
+        var polygon = new maptalks.Polygon([
+            [106.73043,29.81798],
+            [106.53043,29.81798],
+            [106.53043,29.61798],
+            [106.73043,29.61798]
+        ], {
+            symbol : {
+                lineWidth : 3,
+                lineColor : '#223548'
+            }
+        }).addTo(layer);
+
+        map.on('click', function (e) {
+            var marker = new maptalks.Marker(e.coordinate);
+            if(polygon.containsPoint(e.containerPoint))
+            {
+                marker.updateSymbol({
+                    markerFill : '#0e595e'
+                });
+            }
+            marker.addTo(markerLayer);
+        })
+
+        map.on('contextmenu', function () {
+            markerLayer.clear();
+        });
+    </script>
+</body>
+</html>

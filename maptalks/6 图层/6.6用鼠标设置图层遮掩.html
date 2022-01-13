@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用鼠标设置图层遮掩</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var layer = new maptalks.VectorLayer('vector')
+          .addTo(map);
+
+        map.on('mousedown', function(e) {
+            if(!layer.getMask()) {
+                layer.setMask(new maptalks.Marker(e.coordinate, {
+                    'symbol' : {
+                        'markerType': 'ellipse',
+                        'markerWidth': 200,
+                        'markerHeight': 200
+                    }
+                }));
+            } else {
+                // layer.getMask().setCoordinates(e.coordinate);
+            }
+        });
+
+        var extent = map.getExtent(),
+        min = extent.getMin(),
+        w = extent.getWidth(),
+        h = extent.getHeight(),
+        markers = [];
+        for(var i = 0; i < 300; i++){ 
+            markers.push(new maptalks.Marker([min.x + Math.random() * w, min.y + 
+            Math.random() * h]));
+        }
+        layer.addGeometry(markers);
+    </script>
+</body>
+</html>

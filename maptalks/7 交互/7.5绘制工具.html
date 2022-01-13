@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>显示</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+        .pane{
+            background:#34495e;
+            line-height:28px;
+            color:#fff;
+            z-index:10;
+            position:absolute;
+            top:20px;
+            right:20px
+        }
+        .pane a{
+            display:block;
+            color:#fff;
+            text-align:left;
+            padding:0 10px;
+            min-width:28px
+            ;min-height:28px;
+            float:left
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var layer = new maptalks.VectorLayer('vector').addTo(map);
+
+        var drawTool = new maptalks.DrawTool({
+            mode: 'Point'
+        }).addTo(map).disable();
+
+        drawTool.on('drawend', function(param){
+            console.log(param.geometry);
+            layer.addGeometry(param.geometry);
+        });
+
+        var items = ['Point' , 'LineString' , 'Polygon' , 'Circle',
+        'Ellipse', 'Rectangle', 'FreeHandLineString', 'FreeHandPolygon', 'CubicBezierCurve']
+        .map(function(value){
+            return{
+                item : value,
+                click : function () {
+                    drawTool.setMode(value).enable();
+                }
+            }
+        })
+
+        maptalks.DrawTool.registerMode('CubicBezierCurve', {
+            'action': 'clickDblclick',
+            'create': path => new CubicBezierCurve(path),
+            'update': (path, geometry) => {
+                geometry.setCoordinates(path);
+            },
+            'generate': geometry => geometry
+        });
+
+        var toolbar = new maptalks.control.Toolbar({
+            items: [
+            {
+                item: 'Shape',
+                children: items
+            },
+            {
+                item: 'Disable',
+                click: function () {
+                drawTool.disable();
+                }
+            },
+            {
+                item: 'Clear',
+                click: function () {
+                layer.clear();
+                }
+            }
+            ]
+        }).addTo(map);
+    </script>
+</body>
+</html>

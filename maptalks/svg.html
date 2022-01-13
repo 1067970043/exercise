@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>图形样式 - SVG矢量标注</title>
+  <style type="text/css">
+    html,body{margin:0px;height:100%;width:100%}
+    .container{width:100%;height:100%}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+  <body>
+
+    <div id="map" class="container"></div>
+
+    <script>
+      // SVG path from http://dmitrybaranovskiy.github.io/raphael/tiger.html
+      // Licensed under the MIT (http://raphaeljs.com/license.html) license.
+
+      var map = new maptalks.Map('map', {
+        center: [-0.113049,51.49856],
+        zoom: 14,
+        baseLayer: new maptalks.TileLayer('base', {
+          urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+          subdomains: ['a','b','c','d'],
+          attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+        })
+      });
+
+      var layer = new maptalks.VectorLayer('vector').addTo(map);
+
+      var tiger = new maptalks.Marker(
+        [-0.113049,51.49856],
+        {
+          'symbol' : {
+            'markerType': 'path',
+            'markerPath' : getTigerPath(),
+            'markerPathWidth' : 3000,
+            'markerPathHeight' : 3000,
+            // 'markerFill': '#6fa8dc', // will override tiger path's style properties
+            // 'markerLineColor' : 12,
+            'markerWidth': 100,
+            'markerHeight': 100,
+            'markerDy' : 0,
+            'markerDx' : 0
+          }
+        }
+      ).addTo(layer);
+        function getTigerPath() {
+        return [{transform:"matrix(1,0,0,1,200,200)", 
+        path:"M895.616384 347.812188q0 10.22977-0.511489 19.436563t-1.534466 19.436563q-9.206793 84.907093-37.338661 163.164835t-71.096903 150.377622-99.228771 138.613387-121.734266 127.872128q-9.206793 11.252747-23.528472 11.252747-15.344655 0-24.551449-11.252747-65.470529-61.378621-122.245754-128.895105t-100.251748-141.170829-71.608392-152.935065-36.315684-165.210789q0-8.183816-0.511489-15.344655t-0.511489-15.344655q0-71.608392 28.131868-135.032967t76.211788-110.481518 113.038961-74.677323 138.613387-27.62038 138.101898 27.62038 112.527473 74.677323 76.211788 110.481518 28.131868 135.032967zM540.643357 507.396603q33.758242 0 63.424575-12.787213t51.66034-34.26973 34.781219-50.637363 12.787213-61.89011-12.787213-61.89011-34.781219-50.637363-51.66034-34.26973-63.424575-12.787213-63.424575 12.787213-52.171828 34.26973-35.292707 50.637363-12.787213 61.89011 12.787213 61.89011 35.292707 50.637363 52.171828 34.26973 63.424575 12.787213z", 
+        fill:"#1296db"}]
+        }
+    </script>
+  </body>
+</html>

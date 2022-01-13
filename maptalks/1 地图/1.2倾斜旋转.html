@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>倾斜与旋转</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    <div id="map" class="container"></div>
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 11,
+            pitch: 90,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d'],
+                attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+            })
+        });
+
+        var pitch = 0, d = 'up', bearing = 0;
+        var paused = false;
+
+        function changeView() {
+            if (pitch > 90) {
+            d = 'down';
+            } else if (pitch < 0) {
+            d = 'up';
+            }
+            if (d === 'down') {
+            pitch--;
+            } else {
+            pitch++;
+            }
+            map.setPitch(pitch);
+            map.setBearing(bearing++);
+            if (!paused) {
+            requestAnimationFrame(changeView);
+            }
+        }
+
+        function reset() {
+            // requestAnimationFrame(function () {
+            paused = true;
+            pitch = 0;
+            bearing = 0;
+            map.setPitch(0);
+            map.setBearing(0);
+            // });
+        }
+
+        var toolbar = new maptalks.control.Toolbar({
+            items: [
+            {
+                'item' : 'pause',
+                'click' : function () {
+                paused = true;
+                }
+            },
+            {
+                'item' : 'start',
+                'click' : function () {
+                paused = false;
+                changeView();
+                }
+            },
+            {
+                'item' : 'reset',
+                'click' : function () {
+                reset();
+                }
+            }
+            ]
+        }).addTo(map);
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>canvas</title>
+  </head>
+  <body>
+    <canvas></canvas>
+    <script>
+        const myFont = new FontFace('2', 'url(http://xinzhi.space.wallpaper/font?id=2)')
+        myFont.load().then(font => {
+            document.fonts.add(font)
+        }).then(() => {
+            const cvs = document.querySelector('canvas')
+            const ctx = cvs.getContext('2d')
+
+            ctx.font = '30px myFont'
+            ctx.fillText('测试', 50, 50)
+        })
+    </script>
+  </body>
+</html>

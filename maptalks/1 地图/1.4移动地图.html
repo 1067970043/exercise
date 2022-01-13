@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动地图</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d'],
+                attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+            })
+        })
+
+        function up() {
+            map.panBy([0, 500]);
+        }
+
+        function down() {
+            map.panBy([0, -500]);
+        }
+
+        function left() {
+            map.panBy([500, 0]);
+        }
+
+        function right() {
+            map.panBy([-500, 0]);
+        }
+
+        var toolbar = new maptalks.control.Toolbar({
+        items: [
+          {
+            item: '↑',
+            click: up
+          },
+          {
+            item: '↓',
+            click: down
+          },
+          {
+            item: '←',
+            click: left
+          },
+          {
+            item: '→',
+            click: right
+          }
+        ]
+      }).addTo(map);
+
+      document.onkeydown = function(event){
+          if(event.keyCode == 37){
+              left();
+          }else
+          if(event.keyCode == 38){
+              up();
+          }else
+          if(event.keyCode == 39){
+              right();
+          }else
+          if(event.keyCode == 40){
+              down();
+          }
+      }
+    </script>
+</body>
+</html>

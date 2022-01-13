@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>同步地图</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        #map0{
+            width:calc(50% - 2px);
+            height:calc(50% - 2px);
+            float: left;
+            border:1px solid;
+        }
+        #map1{
+            width:calc(50% - 2px);
+            height:calc(50% - 2px);
+            float: right;
+            border:1px solid;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map0"></div>
+    <div id="map1"></div>
+    
+    <script>
+        var map0 = new maptalks.Map('map0',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            zoomControl: true,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d'],
+            })
+        });
+
+        var map1 = new maptalks.Map('map1',{
+            center: map0.getCenter(),
+            zoom: map0.getZoom(),
+            draggable : false,
+            scrollWheelZoom : false,
+            dblClickZoom : false,
+            baseLayer: new maptalks.TileLayer('base1', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d'],
+            })
+        });
+
+        map0.on('moving moveend', function(e) {
+            map1.setCenter(e.target.getCenter());
+        });
+
+        map0.on('zooming zoomend', function (e) {
+            map1.setCenterAndZoom(e.target.getCenter(), e.target.getZoom());
+        });
+
+        map0.on('pitch', function (e) {
+            map1.setPitch(e.target.getPitch());
+        });
+
+        map0.on('rotate', function (e) {
+            map1.setBearing(e.target.getBearing());
+        });
+    </script>
+</body>
+</html>

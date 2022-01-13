@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画板层</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+        .pane{
+            background:#34495e;
+            line-height:28px;
+            color:#fff;
+            z-index:10;
+            position:absolute;
+            top:20px;
+            right:20px
+        }
+        .pane a{
+            display:block;
+            color:#fff;
+            text-align:left;
+            padding:0 10px;
+            min-width:28px
+            ;min-height:28px;
+            float:left
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var canvasLayer = new maptalks.CanvasLayer('c', {
+            'forceRenderOnMoving' : true,
+            'forceRenderOnZooming' : true
+        });
+
+        canvasLayer.prepareToDraw = function() {
+            return ['foo', 'bar'];
+        };
+
+        canvasLayer.draw = function (context, view, param1, param2) {
+            var size = map.getSize();
+            var str = param1 + ',' + param2;
+            context.fillStyle = '#f00';
+            context.font = 'bolder 50px sans-serif';
+            var len = context.measureText(str);
+            context.fillText(str, size.width / 2 - len.width / 2, size.height / 2);
+            this.completeRender();
+        };
+
+        canvasLayer.drawOnInteracting = function (context, view, param1, param2) {
+        this.draw(context, view, param1, param2);
+        };
+
+        map.addLayer(canvasLayer);
+    </script>
+</body>
+</html>

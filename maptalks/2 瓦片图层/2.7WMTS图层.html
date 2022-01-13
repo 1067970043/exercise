@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WMTS图层</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        //没有权限访问
+        var url = 'https://t0.tianditu.gov.cn/vec_c/wmts?request=GetCapabilities&service=wmts&tk=6901643c38b65f1f9770196343cf72b2';
+
+        maptalks.SpatialReference.loadWMTS(url,function(err, conf) {
+            if(err) {
+                throw new Error(err);
+            }
+            var params = conf[0];
+            params.urlTemplate += '&tk=6901643c38b65f1f9770196343cf72b2';
+            var spatialReference = params.spatialReference;
+            var tileLayer = new maptalks.TileLayer('tilelayer', params);
+            var spatialReference = params.spatialReference;
+            var map = new maptalks.Map('map', {
+                center: [106.63043,29.71798],
+                zoom: 14,
+                spatialReference : spatialReference,
+                baseLayer: tileLayer
+            })
+        });
+    </script>
+</body>
+</html>

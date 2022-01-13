@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地图放大镜</title>
+    <style>
+        html,body{
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+        .container{
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/maptalks/dist/maptalks.min.js"></script>
+    
+    <div id="map" class="container"></div>
+    
+    <script>
+        var map = new maptalks.Map('map',{
+            center: [106.63043,29.71798],
+            zoom: 10,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a','b','c','d']
+            })
+        });
+
+        var mousePosition = null;
+        
+        function onMouseMove(e) {
+            mousePosition = e.containerPoint;
+            map.getRenderer().setToRedraw();
+        }
+
+        function onMouseOut() {
+            mousePosition = null;
+            map.getRenderer().setToRedraw();
+        }
+
+        function onRenderEnd(e) {
+            if(!mousePosition){
+                return;
+            }
+            var ctx = e.context;
+            var radius = 150;
+            var pixelRatio = (window.devicePixelRatio || (window.screen.deviceXDPI / window.screen.logicalXDPI));
+            radius*=(pixelRatio > 1 ? 2 : 1);
+            var centerX = mousePosition.x * pixelRatio,
+            centerY = mousePosition.y * pixelRatio;
+            var originX = centerX - radius,
+            originY = centerY - radius;
+            var size = 2 * radius +2;
+            //操纵像素值以放大
+            var sourceData = ctx.getImageData(originX, originY, size, size).data;
+            var dest = ctx.createImageData(size, size);
+            var destData = dest.data;
+            for (var j = 0; j < size; ++j){
+                for(var i = 0; i <size; ++i){
+                    var dI = i - radius;
+                    var dJ = j - radius;
+                    var dist = Math.sqrt(dI * dI + dJ * dJ);
+                    var sourceI = i;
+                    var sourceJ = j;
+                    if (dist < radius) {
+                        sourceI = Math.round(radius + dI / 2);
+                        sourceJ = Math.round(radius + dJ / 2);
+                    }
+                    var destOffset = (j * size + i) * 4;
+                    var sourceOffset = (sourceJ * size + sourceI) * 4;
+                    destData[destOffset] = sourceData[sourceOffset];
+                    destData[destOffset + 1] = sourceData[sourceOffset + 1];
+                    destData[destOffset + 2] = sourceData[sourceOffset + 2];
+                    destData[destOffset + 3] = sourceData[sourceOffset + 3];
+                }
+            }
+            //画放大镜的轮廓
+            ctx.beginPath();
+            ctx.strokeStyle = '#bbb';
+            ctx.lineWidth = 2;
+            ctx.arc(centerX, centerY, radius + 2, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.closePath();
+            //画出放大的图像，并将其剪成圆形
+            ctx.drawImage(createMagCircle(dest, size), centerX - size / 2, centerY - size/2);
+        }
+
+        map.on('mousemove', onMouseMove);
+        map.on('mouseout', onMouseOut);
+        map.on('renderend', onRenderEnd);
+        //将图像数据绘制到画布中，并将其裁剪为直径相同的圆  
+        function createMagCircle(imageData, size){
+            var magImg = document.createElement('canvas');
+            var magCircle = document.createElement('canvas');
+            magImg.width = magImg.height = magCircle.width = magCircle.height = size;
+            magImg.getContext('2d').putImageData(imageData, 0, 0);
+
+            var ctx = magCircle.getContext('2d');
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2,size / 2, 0, 2 * Math.PI);
+            ctx.clip();
+            ctx.drawImage(magImg, 0, 0);
+            return magCircle;
+        }
+
+    </script>
+</body>
+</html>
