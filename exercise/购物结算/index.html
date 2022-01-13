@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css" />
+    <title>购物结算</title>
+</head>
+<body>
+    <h2>交易金额</h2>
+    <div class="container">
+        <h4>资产结算</h4>
+        <h1 id="balance">$0.00</h1>
+        <div class="inc-exp-container">
+            <div>
+                <h4>收入</h4>
+                <p id="money-plus" class="money plus">+$0.00</p>
+            </div>
+            <div>
+                <h4>支出</h4>
+                <p id="money-minus" class="money minus">-$0.00</p>
+            </div>
+        </div>
+        <h3>交易记录</h3>
+        <ul id="list" class="list">
+        </ul>
+        <h3>添加交易记录</h3>
+        <form id="form">
+            <div class="form-control">
+                <label for="text">交易内容</label>
+                <input type="text" id="text" placeholder="交易内容">
+            </div>
+            <div class="form-control">
+                <label for="amount">交易金额</label>
+                <input type="number" id="amount" placeholder="交易金额">
+            </div>
+            <button class="btn">添加记录</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
